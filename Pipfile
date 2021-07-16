@@ -7,9 +7,11 @@ name = "pypi"
 
 [dev-packages]
 autopep8 = "*"
+flake8 = "*"
 
 [requires]
 python_version = "3.9"
 
 [scripts]
 format = "autopep8 -viraa ."
+lint = "flake8 . --count --max-complexity=10 --max-line-length=120 --statistics"

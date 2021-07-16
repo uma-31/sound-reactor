@@ -14,5 +14,6 @@ flake8 = "*"
 python_version = "3.9"
 
 [scripts]
+start = "python sound_reactor.py"
 format = "autopep8 -viraa ."
 lint = "flake8 . --count --max-complexity=10 --max-line-length=120 --statistics"

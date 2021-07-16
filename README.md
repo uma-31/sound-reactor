@@ -1,0 +1,33 @@
+# Sound Reactor
+登録した音声をボイスチャットで再生できるDiscord BOT
+
+
+## 開発を始める
+以下のコマンドをプロジェクトディレクトリ直下で実行し，
+仮想環境を作成します．
+
+※ Pythonは3.9以上を使用してください．
+
+```shell
+$ pip install --upgrade pip
+$ pip install pipenv
+$ pipenv sync --dev
+```
+
+## docstring
+[Numpy形式](https://numpydoc.readthedocs.io/en/latest/format.html)を採用します．
+
+## コミットメッセージ
+`prefix: message`の形式に従います．
+
+有効なPrefixは以下の通りです．
+
+| Prefix | 説明 |
+| :--- | :--- |
+| chore | 本体の機能に関わらない変更 |
+| docs | ドキュメントの変更 |
+| feat | 新しい機能の追加 |
+| fix | バグの修正 |
+| perf | パフォーマンス改善 |
+| refactor | リファクタリング |
+| test | テストの変更 |

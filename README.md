@@ -9,6 +9,7 @@
 ※ Pythonは3.9以上を使用してください．
 
 ```shell
+$ git config --local core.hooksPath .githooks
 $ pip install --upgrade pip
 $ pip install pipenv
 $ pipenv sync --dev

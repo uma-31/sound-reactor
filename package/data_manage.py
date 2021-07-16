@@ -2,7 +2,7 @@ import sqlite3
 
 from discord import Attachment
 from pathlib import Path
-from .exceptions import InvalidFileType
+from .exceptions import InvalidFileType, SoundDataNotFound
 
 
 VALID_FILE_EXTENSIONS = ['wav', 'mp3']
@@ -49,7 +49,7 @@ async def regist_sound(alias: str,
     InvalidFileType
         無効なファイル形式だった場合に発生する
     """
-    file_extension = sound_data.filename.split('.')[-1]
+    file_extension: str = sound_data.filename.split('.')[-1]
 
     if file_extension not in VALID_FILE_EXTENSIONS:
         raise InvalidFileType(f'{file_extension}形式のファイルには対応していません。')
@@ -63,4 +63,34 @@ async def regist_sound(alias: str,
     con.commit()
     con.close()
 
-    await sound_data.save(str(DB_FILE))
+    await sound_data.save(str(DATA_DIR / f'{alias}.{file_extension}'))
+
+
+def remove_sound(alias: str) -> None:
+    """
+    登録されている音ファイルを削除する
+
+    ...
+
+    Parameters
+    ----------
+    alias : str
+        削除する音データのエイリアス
+    """
+    valid_extensions_re = '|'.join(VALID_FILE_EXTENSIONS)
+
+    target_sound_files = list(DATA_DIR.glob(f'{alias}.({valid_extensions_re})'))
+
+    if len(target_sound_files) == 0:
+        raise SoundDataNotFound(f'音声データ{alias}は存在しません。')
+
+    target_sound_files[0].unlink()
+
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    cur.execute('''DELETE FROM sounds WHERE alias=:alias''',
+                {'alias': alias})
+
+    con.commit()
+    con.close()

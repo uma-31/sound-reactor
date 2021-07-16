@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+
+import sys
+
+PREFIXES = [
+    'chore',
+    'docs',
+    'feat',
+    'fix',
+    'perf',
+    'refactor',
+    'test',
+]
+
+with open(sys.argv[1], 'r') as f:
+    commit_message = f.read()
+
+prefix = commit_message.split(':')[0]
+
+if prefix not in PREFIXES:
+    print(u'コミットメッセージのPrefixが正しくありません．')
+    print(u'コミットメッセージには，以下のリストの内1つのPrefixを付けてください．')
+    print(PREFIXES)
+    exit(1)

@@ -27,7 +27,7 @@ def initialize_database() -> None:
 
 async def regist_sound(alias: str,
                        sound_data: Attachment,
-                       description: str='no description') -> None:
+                       description: str = 'no description') -> None:
     """
     音データを登録する
 
@@ -79,7 +79,8 @@ def remove_sound(alias: str) -> None:
     """
     valid_extensions_re = '|'.join(VALID_FILE_EXTENSIONS)
 
-    target_sound_files = list(DATA_DIR.glob(f'{alias}.({valid_extensions_re})'))
+    target_sound_files = list(DATA_DIR.glob(
+        f'{alias}.({valid_extensions_re})'))
 
     if len(target_sound_files) == 0:
         raise SoundDataNotFound(f'音声データ{alias}は存在しません。')

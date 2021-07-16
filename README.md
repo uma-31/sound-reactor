@@ -14,6 +14,20 @@ $ pip install pipenv
 $ pipenv sync --dev
 ```
 
+### スクリプト
+Pipfileに登録されているスクリプトは次の通りです．
+
+| スクリプト名 | 説明 |
+| :--- | :--- |
+| format | autopep8による自動フォーマットを行う |
+| lint | flake8によるチェックを行う |
+
+スクリプトを実行するには，プロジェクトディレクトリ直下で以下のコマンドを実行します．
+
+```
+$ pipenv run <スクリプト名>
+```
+
 ## docstring
 [Numpy形式](https://numpydoc.readthedocs.io/en/latest/format.html)を採用します．
 

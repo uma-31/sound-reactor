@@ -1,7 +1,7 @@
 import json
 import os
 
-from .package.bot import SoundReactor
+from package.bot import SoundReactor
 
 
 def main() -> None:

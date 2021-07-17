@@ -1,6 +1,6 @@
-from discord import Embed
+from discord import Embed, FFmpegPCMAudio, VoiceClient
 from discord.ext import commands
-from .data_manage import get_all_sound_data, initialize, regist_sound, remove_sound
+from .data_manage import get_all_sound_data, get_sound_file_path, initialize, regist_sound, remove_sound
 
 
 class SoundReactor(commands.Bot):
@@ -34,6 +34,11 @@ class SoundReactor(commands.Bot):
         async def remove(ctx: commands.Context,
                          alias: str) -> None:
             await self.__on_remove_command(ctx, alias)
+
+        @self.command()
+        async def play(ctx: commands.Context,
+                       alias: str) -> None:
+            await self.__on_play_command(ctx, alias)
 
     async def __reply_error_message(self,
                                     ctx: commands.Context,
@@ -122,3 +127,34 @@ class SoundReactor(commands.Bot):
             remove_sound(alias)
         except Exception as e:
             await self.__reply_error_message(ctx, e.args[0])
+
+    async def __on_play_command(self,
+                                ctx: commands.Context,
+                                alias: str) -> None:
+        """
+        Parameters
+        ----------
+        ctx : commands.Context
+            https://discordpy.readthedocs.io/ja/latest/ext/commands/api.html#discord.ext.commands.Context
+
+        alias : str
+            再生する音データのエイリアス
+        """
+        if ctx.author.voice is None:  # type: ignore
+            await self.__reply_error_message(ctx, 'playコマンドを実行するにはボイスチャンネルに接続してください。')
+            return
+
+        try:
+            sound_file_path = get_sound_file_path(alias)
+        except Exception as e:
+            await self.__reply_error_message(ctx, e.args[0])
+            return
+
+        voice_client: VoiceClient = await ctx.author.voice.channel.connect()  # type: ignore
+
+        voice_client.play(FFmpegPCMAudio(str(sound_file_path)))
+
+        while voice_client.is_playing():
+            pass
+
+        await voice_client.disconnect()  # type: ignore

@@ -1,6 +1,13 @@
 from discord import Embed, FFmpegPCMAudio, VoiceClient
 from discord.ext import commands
-from .data_manage import get_all_sound_data, get_sound_file_path, initialize, regist_sound, remove_sound
+from .data_manage import (
+    get_all_sound_data,
+    get_sound_file_path,
+    initialize,
+    regist_sound,
+    remove_sound,
+    update_description
+)
 
 
 class SoundReactor(commands.Bot):
@@ -29,6 +36,12 @@ class SoundReactor(commands.Bot):
         async def add(ctx: commands.Context,
                       alias: str) -> None:
             await self.__on_add_command(ctx, alias)
+
+        @self.command()
+        async def describe(ctx: commands.Context,
+                           alias: str,
+                           description: str) -> None:
+            await self.__on_describe_command(ctx, alias, description)
 
         @self.command()
         async def remove(ctx: commands.Context,
@@ -108,6 +121,27 @@ class SoundReactor(commands.Bot):
 
         try:
             await regist_sound(alias, ctx.message.attachments[0])
+        except Exception as e:
+            await self.__reply_error_message(ctx, e.args[0])
+
+    async def __on_describe_command(self,
+                                    ctx: commands.Context,
+                                    alias: str,
+                                    description: str) -> None:
+        """
+        Parameters
+        ----------
+        ctx : commands.Context
+            https://discordpy.readthedocs.io/ja/latest/ext/commands/api.html#discord.ext.commands.Context
+
+        alias : str
+            詳細情報を設定する音データのエイリアス
+
+        description : str
+            詳細情報
+        """
+        try:
+            update_description(alias, description)
         except Exception as e:
             await self.__reply_error_message(ctx, e.args[0])
 

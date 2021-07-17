@@ -4,7 +4,6 @@ from discord import Attachment
 from pathlib import Path
 from .exceptions import InvalidFileType, SoundDataAlreadyExists, SoundDataNotFound
 
-
 VALID_FILE_EXTENSIONS = ['wav', 'mp3']
 
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -158,6 +157,40 @@ async def regist_sound(alias: str,
     con.close()
 
     await sound_data.save(str(DATA_DIR / f'{alias}.{file_extension}'))
+
+
+def update_description(alias: str, description: str) -> None:
+    """
+    音データの詳細情報を更新する
+
+    ...
+
+    Parameters
+    ----------
+    alias : str
+        音データのエイリアス
+
+    description : str
+        詳細情報
+
+    Raises
+    ----------
+    SoundDataNotFound
+        指定された音データが存在しなかった場合に発生する
+    """
+    if not is_sound_exists(alias):
+        raise SoundDataNotFound(f'{alias}は登録されていません。')
+
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    cur.execute('''UPDATE sounds
+                   SET description=:description
+                   WHERE alias=:alias''',
+                {'description': description, 'alias': alias})
+
+    con.commit()
+    con.close()
 
 
 def remove_sound(alias: str) -> None:

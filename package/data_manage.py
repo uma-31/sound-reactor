@@ -10,7 +10,7 @@ VALID_FILE_EXTENSIONS = ['wav', 'mp3']
 PROJECT_ROOT = Path(__file__).parent.parent
 
 DB_FILE = PROJECT_ROOT / 'data.db'
-DATA_DIR = PROJECT_ROOT / 'data/'
+DATA_DIR = PROJECT_ROOT / 'sounds/'
 
 
 def initialize() -> None:

@@ -3,6 +3,12 @@
 
 
 ## 開発を始める
+Linux環境の場合，次のコマンドで依存関係にあるライブラリを取得してください．
+
+```shell
+$ apt install libffi-dev libnacl-dev python3-dev ffmpeg
+```
+
 以下のコマンドをプロジェクトディレクトリ直下で実行し，
 仮想環境を作成します．
 

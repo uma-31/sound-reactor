@@ -1,7 +1,7 @@
 from discord import Embed
 from package.exceptions import InvalidFileType
 from discord.ext import commands
-from .data_manage import is_sound_exists, regist_sound
+from .data_manage import initialize, is_sound_exists, regist_sound
 
 
 class SoundReactor(commands.Bot):
@@ -19,6 +19,8 @@ class SoundReactor(commands.Bot):
         """
         super().__init__(
             command_prefix='.' if 'prefix' not in config else config['prefix'])
+
+        initialize()
 
         @self.command()
         async def add(ctx: commands.Context,

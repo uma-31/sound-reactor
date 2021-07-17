@@ -13,16 +13,20 @@ DB_FILE = PROJECT_ROOT / 'data.db'
 DATA_DIR = PROJECT_ROOT / 'data/'
 
 
-def initialize_database() -> None:
-    """データベースを初期化する"""
-    con = sqlite3.connect(DB_FILE)
-    cur = con.cursor()
+def initialize() -> None:
+    """データの保存場所を確保する"""
+    if not DB_FILE.is_file():
+        con = sqlite3.connect(DB_FILE)
+        cur = con.cursor()
 
-    cur.execute('''CREATE TABLE sounds
-                   (alias text primary key, description text)''')
+        cur.execute('''CREATE TABLE sounds
+                    (alias text primary key, description text)''')
 
-    con.commit()
-    con.close()
+        con.commit()
+        con.close()
+
+    if not DATA_DIR.is_dir():
+        DATA_DIR.mkdir()
 
 
 def get_all_sound_data() -> list[tuple[str, str]]:
@@ -114,7 +118,7 @@ async def regist_sound(alias: str,
     con = sqlite3.connect(DB_FILE)
     cur = con.cursor()
 
-    cur.execute('''INSERT INTO sounds VALUES(:alias :description)''',
+    cur.execute('''INSERT INTO sounds VALUES(:alias, :description)''',
                 {'alias': alias, 'description': description})
 
     con.commit()

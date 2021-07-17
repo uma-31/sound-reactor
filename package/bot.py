@@ -1,6 +1,6 @@
 from discord import Embed
 from discord.ext import commands
-from .data_manage import initialize, regist_sound, remove_sound
+from .data_manage import get_all_sound_data, initialize, regist_sound, remove_sound
 
 
 class SoundReactor(commands.Bot):
@@ -20,6 +20,10 @@ class SoundReactor(commands.Bot):
             command_prefix='.' if 'prefix' not in config else config['prefix'])
 
         initialize()
+
+        @self.command()
+        async def sounds(ctx: commands.Context) -> None:
+            await self.__on_sounds_command(ctx)
 
         @self.command()
         async def add(ctx: commands.Context,
@@ -50,6 +54,25 @@ class SoundReactor(commands.Bot):
         embed = Embed(title='Error!',
                       description=message,
                       color=0xfffc66)
+
+        await ctx.send(embed=embed)
+
+    async def __on_sounds_command(self, ctx: commands.Context) -> None:
+        """
+        Parameters
+        ----------
+        ctx : Context
+            https://discordpy.readthedocs.io/ja/latest/ext/commands/api.html#discord.ext.commands.Context
+        """
+        embed = Embed(title='音データ一覧')
+
+        sounds: list[tuple[str, str]] = get_all_sound_data()
+
+        if len(sounds) == 0:
+            embed.description = '音データが登録されていません。'
+
+        for sound in sounds:
+            embed.add_field(name=sound[0], value=sound[1], inline=False)
 
         await ctx.send(embed=embed)
 

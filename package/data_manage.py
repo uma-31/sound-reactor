@@ -25,6 +25,63 @@ def initialize_database() -> None:
     con.close()
 
 
+def get_all_sound_data() -> list[tuple[str, str]]:
+    """
+    登録された音データの情報を全て取得する
+
+    Returns
+    ----------
+    list[tuple[str, str]]
+        (エイリアス, 詳細情報)の組のリスト
+
+    Note
+    ----------
+    ここで取得できるデータはデータベースに保存されているものであり，
+    音データそのものは含まれないことに注意してください．
+    """
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    cur.execute('''SELECT alias, description FROM sounds''')
+
+    data = cur.fetchall()
+
+    con.close()
+
+    return data
+
+
+def is_sound_exists(alias: str) -> bool:
+    """
+    エイリアスから音データの存在を確認する
+
+    ...
+
+    Parameters
+    ----------
+    alias : str
+        存在を確認したい音データのエイリアス
+
+    Returns
+    ----------
+    bool
+        指定されたエイリアスで登録された音データが
+        存在するかどうか
+    """
+
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    cur.execute('''SELECT * FROM sounds WHERE alias=:alias''',
+                {'alias': alias})
+
+    data = cur.fetchall()
+
+    con.close()
+
+    return len(data) == 1
+
+
 async def regist_sound(alias: str,
                        sound_data: Attachment,
                        description: str = 'no description') -> None:

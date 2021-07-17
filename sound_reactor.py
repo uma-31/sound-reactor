@@ -11,8 +11,8 @@ def main() -> None:
     token: str = os.environ.get('SOUND_REACTOR_TOKEN',
                                 config['token'])
 
-    bot = SoundReactor(token, **config)
-    bot.run()
+    bot = SoundReactor(**config)
+    bot.run(token)
 
 
 if __name__ == '__main__':

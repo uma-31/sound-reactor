@@ -86,6 +86,33 @@ def is_sound_exists(alias: str) -> bool:
     return len(data) == 1
 
 
+def get_sound_file_path(alias: str) -> Path:
+    """
+    エイリアスから音ファイルへのパスを取得する
+
+    ...
+
+    Parameters
+    ----------
+    alias : str
+        ファイルへのパスを取得したい音データのエイリアス
+
+    Returns
+    ----------
+    Path
+        音ファイルへのパス
+
+    Raises
+    ----------
+    SoundDataNotFound
+        指定された音データが登録されていない場合に発生する
+    """
+    if not is_sound_exists(alias):
+        raise SoundDataNotFound(f'{alias}は登録されていません。')
+
+    return list(DATA_DIR.glob(f'{alias}.*'))[0]
+
+
 async def regist_sound(alias: str,
                        sound_data: Attachment,
                        description: str = 'no description') -> None:
@@ -149,11 +176,8 @@ def remove_sound(alias: str) -> None:
     SoundDataNotFound
         指定された音データが存在しなかった場合に発生する
     """
-    if not is_sound_exists(alias):
-        raise SoundDataNotFound(f'{alias}は登録されていません。')
-
-    target_sound_files = list(DATA_DIR.glob(f'{alias}.*'))
-    target_sound_files[0].unlink()
+    target_sound_file = get_sound_file_path(alias)
+    target_sound_file.unlink()
 
     con = sqlite3.connect(DB_FILE)
     cur = con.cursor()

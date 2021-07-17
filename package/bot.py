@@ -1,7 +1,7 @@
 from discord import Embed
 from package.exceptions import InvalidFileType
 from discord.ext import commands
-from .data_manage import initialize, is_sound_exists, regist_sound
+from .data_manage import initialize, is_sound_exists, regist_sound, remove_sound
 
 
 class SoundReactor(commands.Bot):
@@ -26,6 +26,11 @@ class SoundReactor(commands.Bot):
         async def add(ctx: commands.Context,
                       alias: str) -> None:
             await self.__on_add_command(ctx, alias)
+
+        @self.command()
+        async def remove(ctx: commands.Context,
+                         alias: str) -> None:
+            await self.__on_remove_command(ctx, alias)
 
     async def __reply_error_message(self,
                                     ctx: commands.Context,
@@ -58,8 +63,8 @@ class SoundReactor(commands.Bot):
         ctx : Context
             https://discordpy.readthedocs.io/ja/latest/ext/commands/api.html#discord.ext.commands.Context
 
-        *args : list[str]
-            引数のリスト
+        alias : str
+            登録する音データのエイリアス
         """
         if ctx.message is None:
             await self.__reply_error_message(ctx, '予期せぬエラーが発生しました。')
@@ -83,3 +88,20 @@ class SoundReactor(commands.Bot):
         except InvalidFileType as e:
             await self.__reply_error_message(ctx, e.args[0])
             return
+
+    async def __on_remove_command(self,
+                                  ctx: commands.Context,
+                                  alias: str) -> None:
+        """
+        Parameters
+        ----------
+        ctx : Context
+            https://discordpy.readthedocs.io/ja/latest/ext/commands/api.html#discord.ext.commands.Context
+
+        alias : str
+            削除する音データのエイリアス
+        """
+        if not is_sound_exists(alias):
+            await self.__reply_error_message(ctx, f'{alias}は登録されていません。')
+        else:
+            remove_sound(alias)

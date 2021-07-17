@@ -138,10 +138,7 @@ def remove_sound(alias: str) -> None:
     alias : str
         削除する音データのエイリアス
     """
-    valid_extensions_re = '|'.join(VALID_FILE_EXTENSIONS)
-
-    target_sound_files = list(DATA_DIR.glob(
-        f'{alias}.({valid_extensions_re})'))
+    target_sound_files = list(DATA_DIR.glob(f'{alias}.*'))
 
     if len(target_sound_files) == 0:
         raise SoundDataNotFound(f'音声データ{alias}は存在しません。')

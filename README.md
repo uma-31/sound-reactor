@@ -21,6 +21,14 @@ $ pip install pipenv
 $ pipenv sync --dev
 ```
 
+### 起動設定
+Sound Reactorは，
+`config.json`で設定されたトークンか，
+環境変数`SOUND_REACTOR_TOKEN`が設定されている場合はその値を使用してBOTを稼働させます．
+
+誤ってトークン情報をpushするのを防ぐため，
+環境変数を設定することをおすすめします．
+
 ### スクリプト
 Pipfileに登録されているスクリプトは次の通りです．
 

@@ -1,7 +1,6 @@
 from discord import Embed
-from package.exceptions import InvalidFileType
 from discord.ext import commands
-from .data_manage import initialize, is_sound_exists, regist_sound, remove_sound
+from .data_manage import initialize, regist_sound, remove_sound
 
 
 class SoundReactor(commands.Bot):
@@ -79,15 +78,10 @@ class SoundReactor(commands.Bot):
             await self.__reply_error_message(ctx, 'addコマンドで添付できるファイルは1つです。')
             return
 
-        if is_sound_exists(alias):
-            await self.__reply_error_message(ctx, f'{alias}は既に登録されています。')
-            return
-
         try:
             await regist_sound(alias, ctx.message.attachments[0])
-        except InvalidFileType as e:
+        except Exception as e:
             await self.__reply_error_message(ctx, e.args[0])
-            return
 
     async def __on_remove_command(self,
                                   ctx: commands.Context,
@@ -101,7 +95,7 @@ class SoundReactor(commands.Bot):
         alias : str
             削除する音データのエイリアス
         """
-        if not is_sound_exists(alias):
-            await self.__reply_error_message(ctx, f'{alias}は登録されていません。')
-        else:
+        try:
             remove_sound(alias)
+        except Exception as e:
+            await self.__reply_error_message(ctx, e.args[0])

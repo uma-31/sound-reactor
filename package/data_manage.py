@@ -2,7 +2,7 @@ import sqlite3
 
 from discord import Attachment
 from pathlib import Path
-from .exceptions import InvalidFileType, SoundDataNotFound
+from .exceptions import InvalidFileType, SoundDataAlreadyExists, SoundDataNotFound
 
 
 VALID_FILE_EXTENSIONS = ['wav', 'mp3']
@@ -107,9 +107,15 @@ async def regist_sound(alias: str,
 
     Raises
     ----------
+    SoundDataAlreadyExists
+        指定されたエイリアスが既に登録されていた場合に発生する
+
     InvalidFileType
         無効なファイル形式だった場合に発生する
     """
+    if is_sound_exists(alias):
+        raise SoundDataAlreadyExists(f'{alias}は既に登録されています。')
+
     file_extension: str = sound_data.filename.split('.')[-1]
 
     if file_extension not in VALID_FILE_EXTENSIONS:
@@ -129,7 +135,7 @@ async def regist_sound(alias: str,
 
 def remove_sound(alias: str) -> None:
     """
-    登録されている音ファイルを削除する
+    登録されている音データを削除する
 
     ...
 
@@ -137,12 +143,16 @@ def remove_sound(alias: str) -> None:
     ----------
     alias : str
         削除する音データのエイリアス
+
+    Raises
+    ----------
+    SoundDataNotFound
+        指定された音データが存在しなかった場合に発生する
     """
+    if not is_sound_exists(alias):
+        raise SoundDataNotFound(f'{alias}は登録されていません。')
+
     target_sound_files = list(DATA_DIR.glob(f'{alias}.*'))
-
-    if len(target_sound_files) == 0:
-        raise SoundDataNotFound(f'音声データ{alias}は存在しません。')
-
     target_sound_files[0].unlink()
 
     con = sqlite3.connect(DB_FILE)
